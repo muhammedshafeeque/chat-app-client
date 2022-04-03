@@ -9,8 +9,8 @@ function ChatPage() {
     <div className="chat_Home_page">
          <Header/>
       <Box className='master_Box'>
-        {/* <MyChats/> */}
-        {/* <ChatBox/> */}
+        <MyChats/>
+        <ChatBox/>
      
       </Box>
       

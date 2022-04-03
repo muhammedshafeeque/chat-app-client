@@ -23,7 +23,7 @@ function SideDrawer() {
   const [keword, setKeyWord] = useState("");
   const [loading, setLoading] = useState(false);
   const toast = useToast();
-  const { user, chat, setChat, setSelectedChat } = Store();
+  const { user, chat , setChat, setSelectedChat } = Store();
   const manageSearch = async () => {
     setLoading(true);
     if (!keword) {
