@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { useDisclosure } from "@chakra-ui/hooks";
 import {
   Button,
@@ -15,7 +15,7 @@ import {
 } from "@chakra-ui/react";
 import { BsSearch } from "react-icons/bs";
 import axios from "../../../Constant/Axios";
-import {ChatContext} from "../../../Context/ChatPrivider";
+import { Store} from "../../../Context/ChatPrivider";
 import UserListItem from "../userListItem/UserListItem";
 function SideDrawer() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -23,8 +23,7 @@ function SideDrawer() {
   const [keword, setKeyWord] = useState("");
   const [loading, setLoading] = useState(false);
   const toast = useToast();
-  const { user, chat, setChat, setSelectedChat}=useContext(ChatContext)
-
+  const { user, chat, setChat, setSelectedChat } = Store();
   const manageSearch = async () => {
     setLoading(true);
     if (!keword) {

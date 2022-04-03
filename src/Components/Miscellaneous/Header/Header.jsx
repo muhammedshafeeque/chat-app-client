@@ -1,13 +1,13 @@
 import { Menu, MenuButton, MenuItem, MenuList, Text,Button } from "@chakra-ui/react";
 import {ChevronDownIcon} from '@chakra-ui/icons' 
-import React,{useContext} from "react";
-import {ChatContext} from "../../../Context/ChatPrivider";
+import React from "react";
+import { Store } from "../../../Context/ChatPrivider";
 import "./header.scss";
 import { useNavigate } from "react-router-dom";
 import SideDrawer from "../Drawer/SideDrawer";
 
 function Header() {
-  const {user,setUser}=useContext(ChatContext)
+  const { user ,setUser} = Store();
   const navigate=useNavigate()
   return (
     <div className="header">
