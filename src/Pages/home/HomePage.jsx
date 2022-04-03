@@ -1,7 +1,7 @@
 import { Box, Container, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from "@chakra-ui/react";
 import React from "react";
-import Login from "../../Components/Login/Login";
-import Signup from "../../Components/Signup/Signup";
+import Login from "../../Components/Authentication/Login/Login";
+import Signup from "../../Components/Authentication/Signup/Signup";
 import "./home.scss";
 function HomePage() {
   return (

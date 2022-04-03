@@ -1,0 +1,17 @@
+.header{
+    width: 100%;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 10px 5px 10px;
+    border-width: 5px;
+    .Header_text{
+        font-size: 30px;
+    }
+    .profile_area{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}

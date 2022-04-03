@@ -5,18 +5,19 @@ import {
   Input,
   useToast,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import "./login.scss";
 import EmailValidator from "email-validator";
-import axios from "../../Constant/Axios";
-import { Store } from "../../Context/ChatPrivider";
+import axios from "../../../Constant/Axios";
+import { ChatContext } from "../../../Context/ChatPrivider";
 import { useNavigate } from "react-router-dom";
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState();
   const [loading, setLoading] = useState(false);
   const toast = useToast();
-  const {setUser} = Store()
+  const {setUser}=useContext(ChatContext)
+ 
   const navigate=useNavigate()
   const manageSubmit = async () => {
     setLoading(true);

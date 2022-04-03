@@ -1,16 +1,16 @@
 import { Button, Input, useToast } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { FormControl, FormLabel } from "@chakra-ui/form-control";
 import "./signup.scss";
-import axios from '../../Constant/Axios'
-import { Store } from "../../Context/ChatPrivider";
+import axios from '../../../Constant/Axios'
+import { ChatContext } from "../../../Context/ChatPrivider";
 import { useNavigate } from "react-router-dom";
 import EmailValidator from 'email-validator'
 function Signup() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
-  const {setUser}=Store()
+  const {setUser} = useContext(ChatContext)
   const [loading, setLoading] = useState(false);
   const navigate=useNavigate()
   const toast = useToast();
