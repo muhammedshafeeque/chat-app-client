@@ -23,6 +23,7 @@
     margin-top: 10px;
     overflow-y: hidden;
     .messages {
+      width: 100%;
       display: flex;
       flex-direction: column;
       overflow-y: scroll;

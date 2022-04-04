@@ -74,7 +74,7 @@ function ChatBox() {
         };
         const { data } = await axios.post("/api/message/send", message, config);
         if (!data.error) {
-          setMessages([data, ...messages]);
+          setMessages([ ...messages,data]);
           setNewMessage("");
         } else {
           toast({
@@ -107,9 +107,10 @@ function ChatBox() {
             {getSender(user, selectedChat.users).toUpperCase()}
           </Text>
           <Box className="chat_area">
-            <div className="messages">
+            {messages.length>0 ? <div className="messages">
               <ScrollableChat messages={messages} />
-            </div>
+            </div>:''}
+            
             <FormControl
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
