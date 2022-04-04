@@ -3,13 +3,20 @@ import React, { useEffect, useState } from "react";
 import "./chatbox.scss";
 import { Store } from "../../../Context/ChatPrivider";
 import { getSender } from "../../../Config/ChatLogic";
-import axios from "../../../Constant/Axios";
+import axios, { baseUrl } from "../../../Constant/Axios";
 import ScrollableChat from "../../Miscellaneous/ScrollableChat/ScrollableChat";
-function ChatBox() {
-  const { selectedChat, user } = Store();
-  const [messages, setMessages] = useState([]);
+import io from "socket.io-client";
+function ChatBox({messages, setMessages}) {
+  const user=JSON.parse(localStorage.getItem("userInfo"))
+  const { selectedChat } = Store();
+  const [socketConnected, setSocketConnected] = useState(false);
+  
   const [newMessage, setNewMessage] = useState();
+  var socket, selectedChatCompare;
+  socket = io(baseUrl);
   const toast = useToast();
+
+ 
   const fetchMessages = async () => {
     
     if (selectedChat) {
@@ -26,7 +33,7 @@ function ChatBox() {
           `/api/message/fetch-messages/${selectedChat._id}`,
           config
         );
-        
+        socket.emit("join chat", selectedChat._id);
         if (!data.error) {
           setMessages(data);
         }else{
@@ -65,14 +72,18 @@ function ChatBox() {
           sender:user.id, 
           content: newMessage,
           chatId:selectedChat._id,
+          chat:selectedChat
         };
+        socket.emit("new message", message);
         const config = {
           headers: {
             "Content-type": "application/json",
             Authorization: `Bearer ${user.token}`,
           },
         };
+
         const { data } = await axios.post("/api/message/send", message, config);
+        
         if (!data.error) {
           setMessages([ ...messages,data]);
           setNewMessage("");
@@ -96,9 +107,33 @@ function ChatBox() {
       }
     }
   };
-  useEffect(() => {
-    fetchMessages();
+  useEffect(()=>{
+    socket.emit("setup",user); 
+    socket.on("connection", () => {
+      setSocketConnected(true);  
+    });
+  })
+  useEffect(() => { 
+    fetchMessages(); 
+    selectedChatCompare = selectedChat;
   }, [selectedChat]);
+  
+  socket.on("message recieved", (data) => {
+      
+    if (
+      !selectedChatCompare ||
+      selectedChatCompare._id !== data.chat._id
+    ) {
+    } else {
+      console.log(messages)
+      setMessages([ ...messages,data]);
+        setNewMessage("");
+      
+      
+    }
+
+  });
+  
   return (
     <Box className="chatBox">
       {selectedChat ? (
