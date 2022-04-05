@@ -6,21 +6,32 @@ import { getSender } from "../../../Config/ChatLogic";
 import axios, { baseUrl } from "../../../Constant/Axios";
 import ScrollableChat from "../../Miscellaneous/ScrollableChat/ScrollableChat";
 import io from "socket.io-client";
-function ChatBox({messages, setMessages}) {
-  const user=JSON.parse(localStorage.getItem("userInfo"))
+function ChatBox() {
+  const user = JSON.parse(localStorage.getItem("userInfo"));
   const { selectedChat } = Store();
   const [socketConnected, setSocketConnected] = useState(false);
-  
-  const [newMessage, setNewMessage] = useState();
+  const [messages, setMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState("");
   var socket, selectedChatCompare;
   socket = io(baseUrl);
   const toast = useToast();
+  selectedChatCompare = selectedChat;
 
- 
-  const fetchMessages = async () => {
-    
-    if (selectedChat) {
+  socket.emit("setup", user);
+  socket.on("connection", () => {
+    setSocketConnected(true);
+  });
+  socket.on("message recieved", ((data) => {
+    console.log(messages);
+    if (!selectedChatCompare || selectedChatCompare._id !== data.chat._id) {
+    } else {
       
+      setMessages([...messages, data]);
+      setNewMessage("");
+    }
+  }));
+  const fetchMessages = async () => {
+    if (selectedChat) {
       try {
         const config = {
           headers: {
@@ -28,7 +39,7 @@ function ChatBox({messages, setMessages}) {
             Authorization: `Bearer ${user.token}`,
           },
         };
-        
+
         const { data } = await axios.get(
           `/api/message/fetch-messages/${selectedChat._id}`,
           config
@@ -36,7 +47,7 @@ function ChatBox({messages, setMessages}) {
         socket.emit("join chat", selectedChat._id);
         if (!data.error) {
           setMessages(data);
-        }else{
+        } else {
           toast({
             title: "message fetching faild",
             status: "error",
@@ -66,15 +77,14 @@ function ChatBox({messages, setMessages}) {
         position: "top",
       });
     } else {
-      try {  
-     
+      try {
         let message = {
-          sender:user.id, 
+          sender: user.id,
           content: newMessage,
-          chatId:selectedChat._id,
-          chat:selectedChat
+          chatId: selectedChat._id,
+          chat: selectedChat,
         };
-        socket.emit("new message", message);
+
         const config = {
           headers: {
             "Content-type": "application/json",
@@ -83,9 +93,10 @@ function ChatBox({messages, setMessages}) {
         };
 
         const { data } = await axios.post("/api/message/send", message, config);
-        
+
         if (!data.error) {
-          setMessages([ ...messages,data]);
+          setMessages([...messages, data]);
+          socket.emit("new message", message);
           setNewMessage("");
         } else {
           toast({
@@ -107,33 +118,11 @@ function ChatBox({messages, setMessages}) {
       }
     }
   };
-  useEffect(()=>{
-    socket.emit("setup",user); 
-    socket.on("connection", () => {
-      setSocketConnected(true);  
-    });
-  })
-  useEffect(() => { 
-    fetchMessages(); 
-    selectedChatCompare = selectedChat;
-  }, [selectedChat]);
-  
-  socket.on("message recieved", (data) => {
-      
-    if (
-      !selectedChatCompare ||
-      selectedChatCompare._id !== data.chat._id
-    ) {
-    } else {
-      console.log(messages)
-      setMessages([ ...messages,data]);
-        setNewMessage("");
-      
-      
-    }
 
-  });
-  
+  useEffect(() => {
+    fetchMessages();
+  }, [selectedChat]);
+
   return (
     <Box className="chatBox">
       {selectedChat ? (
@@ -142,10 +131,14 @@ function ChatBox({messages, setMessages}) {
             {getSender(user, selectedChat.users).toUpperCase()}
           </Text>
           <Box className="chat_area">
-            {messages.length>0 ? <div className="messages">
-              <ScrollableChat messages={messages} />
-            </div>:''}
-            
+            {messages.length > 0 ? (
+              <div className="messages">
+                <ScrollableChat messages={messages} />
+              </div>
+            ) : (
+              <p></p>
+            )}
+
             <FormControl
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
