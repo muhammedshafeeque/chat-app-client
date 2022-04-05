@@ -1,34 +1,28 @@
-.message_contentdiv{
+.message_contentdiv {
   width: 100%;
   display: flex;
-  
 }
 .send_message {
   margin-top: 10px;
   width: 100%;
   display: flex;
   justify-content: end;
-  p{
-    
+  p {
     padding: 8px;
-  border-radius: 10px;
-  background-color: rgb(138, 223, 98);
-  color: rgb(69, 53, 107);
+    border-radius: 10px;
+    background-color: rgb(138, 223, 98);
+    color: rgb(69, 53, 107);
   }
-  
-  
-  
 }
-.resive_mesage{
+.resive_mesage {
   margin-top: 10px;
   width: 100%;
   display: flex;
   justify-content: start;
-  p{
-    
+  p {
     padding: 8px;
-  border-radius: 10px;
-  background-color: rgb(25, 7, 126);
-  color: rgb(171, 165, 185);
+    border-radius: 10px;
+    background-color: rgb(25, 7, 126);
+    color: rgb(171, 165, 185);
   }
 }

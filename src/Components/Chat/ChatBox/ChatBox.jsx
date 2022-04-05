@@ -22,7 +22,6 @@ function ChatBox() {
     setSocketConnected(true);
   });
   socket.on("message recieved", ((data) => {
-    console.log(messages);
     if (!selectedChatCompare || selectedChatCompare._id !== data.chat._id) {
     } else {
       
@@ -95,6 +94,7 @@ function ChatBox() {
         const { data } = await axios.post("/api/message/send", message, config);
 
         if (!data.error) {
+          message._id=data._id
           setMessages([...messages, data]);
           socket.emit("new message", message);
           setNewMessage("");
