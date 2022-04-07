@@ -8,7 +8,7 @@ import ScrollableChat from "../../Miscellaneous/ScrollableChat/ScrollableChat";
 import io from "socket.io-client";
 function ChatBox() {
   const user = JSON.parse(localStorage.getItem("userInfo"));
-  const { selectedChat } = Store();
+  const { selectedChat,notification,setNotification } = Store();
   const [socketConnected, setSocketConnected] = useState(false);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
@@ -23,6 +23,9 @@ function ChatBox() {
   });
   socket.on("message recieved", ((data) => {
     if (!selectedChatCompare || selectedChatCompare._id !== data.chat._id) {
+      if(!notification.includes(data)){
+        setNotification([data,...notification])
+      }
     } else {
       
       setMessages([...messages, data]);
@@ -94,6 +97,7 @@ function ChatBox() {
         const { data } = await axios.post("/api/message/send", message, config);
 
         if (!data.error) {
+           message.senderId=user.id 
           message._id=data._id
           setMessages([...messages, data]);
           socket.emit("new message", message);
